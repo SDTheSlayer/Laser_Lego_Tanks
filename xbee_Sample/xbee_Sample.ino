@@ -14,15 +14,18 @@ Hardware Hookup:
 // We'll use SoftwareSerial to communicate with the XBee:
 #include <SoftwareSerial.h>
 
-//For Atmega328P's
-// XBee's DOUT (TX) is connected to pin 2 (Arduino's Software RX)
-// XBee's DIN (RX) is connected to pin 3 (Arduino's Software TX)
-//SoftwareSerial XBee(2, 3); // RX, TX
+#define RFront  3
+#define RBack  4
+#define LFront  5 
+#define LBack  6
+#define Laser 7
 
 //For Atmega2560, ATmega32U4, etc.
 // XBee's DOUT (TX) is connected to pin 10 (Arduino's Software RX)
 // XBee's DIN (RX) is connected to pin 11 (Arduino's Software TX)
 SoftwareSerial XBee(10, 11); // RX, TX
+
+
 
 void setup()
 {
@@ -31,16 +34,60 @@ void setup()
   // setting of your XBee.
   XBee.begin(9600);
   Serial.begin(9600);
+  pinMode(LFront, OUTPUT);
+  pinMode(RFront, OUTPUT);
+  pinMode(RBack, OUTPUT);
+  pinMode(LBack, OUTPUT);
+  pinMode(Laser, OUTPUT);
 }
 
 void loop()
 {
+//  digitalWrite(LBack,LOW);
+//  digitalWrite(RFront,LOW);
+//  digitalWrite(LFront,LOW);
+//  digitalWrite(RBack,LOW);
+//  digitalWrite(Laser,LOW);
+  
   if(XBee.available()){
-    char c= XBee.read();
+    char c = XBee.read();
     Serial.write(c);
-
-    delay(1000);    //delay is nessecary to write properly
+    if(c=='S')
+       digitalWrite(Laser,HIGH);
+    else if(c=='U')
+     {
+        digitalWrite(LFront,HIGH); 
+        digitalWrite(RFront,HIGH);
+        digitalWrite(Laser,LOW);
+     }
+    else if(c=='R')
+    {
+      digitalWrite(LFront,HIGH);
+      digitalWrite(RBack,HIGH);
+      digitalWrite(Laser,LOW);
+    }
+    else if(c=='L')
+    {
+      digitalWrite(RFront,HIGH); 
+      digitalWrite(LBack,HIGH);
+      digitalWrite(Laser,LOW);
+    }
+    else if(c=='B')
+    {
+      digitalWrite(LBack,HIGH);
+      digitalWrite(RBack,HIGH);
+      digitalWrite(Laser,LOW);
+    }
+    else if(c=='N')
+    {
+      digitalWrite(LFront,LOW); 
+      digitalWrite(RFront,LOW);
+      digitalWrite(LBack,LOW);
+      digitalWrite(RBack,LOW);
+      digitalWrite(Laser,LOW);
+    }
+    delay(500);    //delay is nessecary to write properly
     
-    XBee.write("JoyStick");
+    //XBee.write("JoyStick");
   }
 }
