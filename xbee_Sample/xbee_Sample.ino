@@ -42,16 +42,15 @@ void setup()
 }
 
 void loop()
-{
-//  digitalWrite(LBack,LOW);
-//  digitalWrite(RFront,LOW);
-//  digitalWrite(LFront,LOW);
-//  digitalWrite(RBack,LOW);
-//  digitalWrite(Laser,LOW);
+{  
+  int ldr_front_value = analogRead(A0);
+  //int ldr_left_value = analogRead(A1);
+  //int ldr_right_value = analogRead(A2);
   
   if(XBee.available()){
+    XBee.write(ldr_front_value);
     char c = XBee.read();
-    Serial.write(c);
+    Serial.println(c);
     if(c=='S')
        digitalWrite(Laser,HIGH);
     else if(c=='U')
@@ -86,8 +85,7 @@ void loop()
       digitalWrite(RBack,LOW);
       digitalWrite(Laser,LOW);
     }
-    delay(500);    //delay is nessecary to write properly
+    delay(200);    //delay is nessecary to write properly
     
-    //XBee.write("JoyStick");
   }
 }
