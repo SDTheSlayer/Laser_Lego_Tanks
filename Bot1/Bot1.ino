@@ -6,6 +6,7 @@
 #define LFront  5 
 #define LBack  6
 #define Laser 7
+#define ProxSensor 2
 
 //For Atmega2560, ATmega32U4, etc.
 // XBee's DOUT (TX) is connected to pin 10 (Arduino's Software RX)
@@ -26,19 +27,50 @@ void setup()
   pinMode(RFront, OUTPUT);
   pinMode(RBack, OUTPUT);
   pinMode(LBack, OUTPUT);
-  pinMode(Laser, OUTPUT);
+  pinMode(Laser, OUTPUT);    
+  //Pin 2 is connected to the output of proximity sensor
+  pinMode(ProxSensor,INPUT);
 }
 
 void loop()
-{  
-  int ldr_front_value = analogRead(A0);
-  //int ldr_left_value = analogRead(A1);
-  //int ldr_right_value = analogRead(A2);
+{ 
+  char touch = 'G';
   
+  if(digitalRead(ProxSensor)==HIGH)      //Check the sensor output
+  {
+    touch = 'H';  
+  }
+  else
+  {
+    touch  = 'G';
+  } 
+  
+  int ldr_front_value = analogRead(A0);
+  int ldr_left_value = analogRead(A1);
+  int ldr_right_value = analogRead(A2);
+  char hit = 'X';
+
+   
+    //Serial.println(ldr_left_value);   
   if(XBee.available()){
-    XBee.write(ldr_front_value);
+    
+   if(ldr_front_value > 970){
+        hit = 'Q';
+      
+      }
+    if(ldr_left_value > 970){
+        hit = 'W';
+      
+      }
+    if(ldr_right_value > 970){
+        hit = 'W';
+      
+      }
+    Serial.println(hit);
+    XBee.write(hit);
+    XBee.write(touch);
     char c = XBee.read();
-    Serial.println(c);
+   
     if(c=='S')
        digitalWrite(Laser,HIGH);
     else if(c=='U')
@@ -73,7 +105,8 @@ void loop()
       digitalWrite(RBack,LOW);
       digitalWrite(Laser,LOW);
     }
-    delay(200);    //delay is nessecary to write properly
+    Serial.println(touch);
+    delay(100);    //delay is nessecary to write properly
     
   }
 }
