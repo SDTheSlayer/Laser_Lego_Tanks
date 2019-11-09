@@ -51,22 +51,22 @@ void loop()
   char hit = 'X';
 
    
-    //Serial.println(ldr_left_value);   
+ // Serial.println(ldr_right_value);   
   if(XBee.available()){
     
-   if(ldr_front_value > 970){
+   if(ldr_front_value > 950){
         hit = 'Q';
       
       }
-    if(ldr_left_value > 970){
+    if(ldr_left_value > 950){
         hit = 'W';
       
       }
-    if(ldr_right_value > 970){
+    if(ldr_right_value > 950){
         hit = 'W';
       
       }
-    Serial.println(hit);
+   // Serial.println(hit);
     XBee.write(hit);
     XBee.write(touch);
     char c = XBee.read();
@@ -75,29 +75,49 @@ void loop()
        digitalWrite(Laser,HIGH);
     else if(c=='U')
      {
+
+        digitalWrite(LBack,LOW);
+        digitalWrite(RBack,LOW);
+
         digitalWrite(LFront,HIGH); 
         digitalWrite(RFront,HIGH);
+
         digitalWrite(Laser,LOW);
      }
     else if(c=='R')
     {
+
+        digitalWrite(LBack,LOW);
+        digitalWrite(RFront, LOW);
+      
       digitalWrite(LFront,HIGH);
       digitalWrite(RBack,HIGH);
+
       digitalWrite(Laser,LOW);
     }
     else if(c=='L')
     {
+
+      digitalWrite(LFront,LOW);
+      digitalWrite(RBack,LOW);
+        
       digitalWrite(RFront,HIGH); 
       digitalWrite(LBack,HIGH);
+
       digitalWrite(Laser,LOW);
     }
     else if(c=='B')
     {
+
+        digitalWrite(LFront,LOW);
+        digitalWrite(RFront,LOW);
+      
       digitalWrite(LBack,HIGH);
       digitalWrite(RBack,HIGH);
+
       digitalWrite(Laser,LOW);
     }
-    else if(c=='N')
+    else if(c == 'N')
     {
       digitalWrite(LFront,LOW); 
       digitalWrite(RFront,LOW);
@@ -105,8 +125,8 @@ void loop()
       digitalWrite(RBack,LOW);
       digitalWrite(Laser,LOW);
     }
-    Serial.println(touch);
-    delay(100);    //delay is nessecary to write properly
+   // Serial.println(touch);
+    delay(150);    //delay is nessecary to write properly
     
   }
 }
